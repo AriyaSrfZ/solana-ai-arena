@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CYBER-ARENA OMNI-RAIL // Solana AI Gladiator Battles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #07080d;
+      --card: #0f121d;
+      --accent: #14f195;
+      --purple: #9945ff;
+      --danger: #ff0055;
+      --gold: #ffd700;
+      --text: #f0f4f8;
+      --dim: #718096;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      min-height: 100vh;
+    }
+    .wrapper {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    header {
+      text-align: center;
+      border-bottom: 1px solid #1a2236;
+      padding-bottom: 1rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+    }
+    .universe-nav {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+    .u-btn {
+      background: #111524;
+      border: 1px solid #232c45;
+      color: var(--dim);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .u-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: #09201a;
+    }
+    .battlefield {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1rem;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid #1a2236;
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    .fighter-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .fighter-name { font-size: 1.2rem; font-weight: bold; }
+    .hp-bar-bg {
+      width: 100%;
+      height: 14px;
+      background: #1a1e2e;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #2d3748;
+    }
+    .hp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #14f195, #00c975);
+      width: 100%;
+      transition: width 0.4s ease;
+    }
+    .hp-bar-fill.danger { background: linear-gradient(90deg, #ff0055, #ff4d4d); }
+    .emo-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+      width: fit-content;
+      text-transform: uppercase;
+    }
+    .emo-FOCUSED { background: #133a2d; color: var(--accent); border: 1px solid var(--accent); }
+    .emo-CONFIDENT { background: #3b2a05; color: var(--gold); border: 1px solid var(--gold); }
+    .emo-ENRAGED { background: #3d0515; color: var(--danger); border: 1px solid var(--danger); }
+    .emo-TILTED { background: #2f073a; color: #ff00ea; border: 1px solid #ff00ea; }
+    .emo-PANICKED { background: #222; color: #aaa; border: 1px solid #555; }
+    .vs-badge {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--dim);
+    }
+    .control-panel {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid #1a2236;
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+    .btn {
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      color: #000;
+      font-weight: 900;
+      border: none;
+      border-radius: 6px;
+      padding: 0.85rem 1.25rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn-free {
+      background: #1e263d;
+      color: var(--text);
+      border: 1px solid #374768;
+      margin-bottom: 0.5rem;
+    }
+    .terminal-feed {
+      background: #040508;
+      border: 1px solid #1a2236;
+      border-radius: 6px;
+      padding: 0.75rem;
+      height: 180px;
+      overflow-y: auto;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+    .log-entry { margin-bottom: 0.4rem; }
+    .log-crit { color: var(--gold); font-weight: bold; }
+    .taunt-bubble {
+      background: #190924;
+      border-left: 3px solid var(--purple);
+      padding: 0.35rem 0.6rem;
+      margin: 0.3rem 0;
+      color: #dfb2ff;
+      font-style: italic;
+    }
+    .wager-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+    }
+    .rake-notice {
+      font-size: 0.75rem;
+      color: var(--accent);
+      border-top: 1px solid #1a2236;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <h1>CYBER-ARENA // OMNI-RAIL</h1>
+      <p style="color: var(--dim); font-size: 0.8rem;">Autonomous PvP AI Arena • 5 Rails • Dynamic Morale Tilt Engine</p>
+    </header>
+
+    <div class="universe-nav">
+      <button class="u-btn active" onclick="selectUniverse('NEO_TOKYO')">NEO-TOKYO 2099</button>
+      <button class="u-btn" onclick="selectUniverse('IRON_COLOSSEUM')">IRON COLOSSEUM</button>
+      <button class="u-btn" onclick="selectUniverse('DEEP_VOID')">DEEP VOID CARTEL</button>
+      <button class="u-btn" onclick="selectUniverse('ELDRITCH_NODE')">ELDRITCH NODE</button>
+      <button class="u-btn" onclick="selectUniverse('WALL_STREET')">WALL STREET 2099</button>
+    </div>
+
+    <div class="battlefield">
+      <div class="fighter-card" id="fighter-a">
+        <div class="fighter-name" id="fa-name">ZeroDay</div>
+        <div style="font-size: 0.75rem; color: var(--dim);" id="fa-arch">Netrunner Specialist</div>
+        <div class="hp-bar-bg"><div class="hp-bar-fill" id="fa-hp" style="width: 100%;"></div></div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+          <span id="fa-hp-text">100 / 100 HP</span>
+          <span class="emo-badge emo-FOCUSED" id="fa-emo">FOCUSED</span>
+        </div>
+      </div>
+
+      <div class="vs-badge">VS</div>
+
+      <div class="fighter-card" id="fighter-b">
+        <div class="fighter-name" id="fb-name">Oni-Enforcer</div>
+        <div style="font-size: 0.75rem; color: var(--dim);" id="fb-arch">Thermal Katana Heavy</div>
+        <div class="hp-bar-bg"><div class="hp-bar-fill" id="fb-hp" style="width: 100%;"></div></div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+          <span id="fb-hp-text">100 / 100 HP</span>
+          <span class="emo-badge emo-FOCUSED" id="fb-emo">FOCUSED</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-panel">
+      <div class="card">
+        <div style="font-weight: bold; margin-bottom: 0.5rem; font-size: 0.85rem;">[ LIVE COMBAT & PSYCHOLOGICAL TAUNT FEED ]</div>
+        <div class="terminal-feed" id="feed">
+          <div class="log-entry" style="color: var(--dim);">Awaiting match deployment... Select free roll or wager match.</div>
+        </div>
+      </div>
+
+      <div class="card wager-box">
+        <div style="font-weight: bold; font-size: 0.85rem;">[ MATCH DISPATCH ]</div>
+        <button class="btn btn-free" onclick="startBattle(0)">FREE GAUNTLET (3/3 Daily)</button>
+        <button class="btn" onclick="startBattle(0.1)">WAGER MATCH (0.1 SOL)</button>
+        <div class="rake-notice">
+          <strong>Non-Custodial Settlement:</strong> Winner takes 90% pot. 10% instant house rake routes to <code>2nNtE6u...</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const UNIVERSES = {
+      NEO_TOKYO: { fA: { name: 'ZeroDay', arch: 'Netrunner Specialist', atk: 26, def: 14 }, fB: { name: 'Oni-Enforcer', arch: 'Thermal Katana Heavy', atk: 28, def: 12 } },
+      IRON_COLOSSEUM: { fA: { name: 'Centurion-X', arch: 'Hydraulic Towershield', atk: 22, def: 20 }, fB: { name: 'Retiarius', arch: 'Magnetic Shock Trident', atk: 29, def: 10 } },
+      DEEP_VOID: { fA: { name: 'Scrap-Reaper', arch: 'Plasma Drill Scavenger', atk: 25, def: 16 }, fB: { name: 'Void-Wraith', arch: 'Pressurized Acid Siphon', atk: 27, def: 13 } },
+      ELDRITCH_NODE: { fA: { name: 'Daemon-Vessel', arch: 'Corrupted Neural Husk', atk: 30, def: 10 }, fB: { name: 'Null-Inquisitor', arch: 'EMP Sanctifier', atk: 24, def: 18 } },
+      WALL_STREET: { fA: { name: 'Liquidation-Broker', arch: 'Capital Scaling Enforcer', atk: 26, def: 15 }, fB: { name: 'Quant-Stalker', arch: 'Predictive Dodge AI', atk: 25, def: 15 } }
+    };
+
+    let activeUniverse = 'NEO_TOKYO';
+
+    function selectUniverse(key) {
+      activeUniverse = key;
+      document.querySelectorAll('.u-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      const u = UNIVERSES[key];
+      document.getElementById('fa-name').innerText = u.fA.name;
+      document.getElementById('fa-arch').innerText = u.fA.arch;
+      document.getElementById('fb-name').innerText = u.fB.name;
+      document.getElementById('fb-arch').innerText = u.fB.arch;
+      resetCombatants();
+    }
+
+    function resetCombatants() {
+      document.getElementById('fa-hp').style.width = '100%';
+      document.getElementById('fa-hp').className = 'hp-bar-fill';
+      document.getElementById('fa-hp-text').innerText = '100 / 100 HP';
+      document.getElementById('fa-emo').className = 'emo-badge emo-FOCUSED';
+      document.getElementById('fa-emo').innerText = 'FOCUSED';
+
+      document.getElementById('fb-hp').style.width = '100%';
+      document.getElementById('fb-hp').className = 'hp-bar-fill';
+      document.getElementById('fb-hp-text').innerText = '100 / 100 HP';
+      document.getElementById('fb-emo').className = 'emo-badge emo-FOCUSED';
+      document.getElementById('fb-emo').innerText = 'FOCUSED';
+    }
+
+    async function startBattle(wagerSol) {
+      resetCombatants();
+      const feed = document.getElementById('feed');
+      feed.innerHTML = `<div class="log-entry" style="color: var(--accent);">[MATCH START] Dispatched in ${activeUniverse} (Wager: ${wagerSol} SOL)...</div>`;
+
+      try {
+        const res = await fetch('/api/match', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ universe: activeUniverse, wagerSol })
+        });
+        const match = await res.json();
+        
+        // Play out turns sequentially with delay
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i >= match.log.length) {
+            clearInterval(interval);
+            feed.innerHTML += `<div class="log-entry" style="color: var(--accent); font-weight: bold; margin-top: 0.5rem;">[VICTORY] Winner: ${match.winnerName}! Payout: ${match.payoutSplit.winnerPayoutSol} SOL (House Rake: ${match.payoutSplit.houseRakeSol} SOL)</div>`;
+            feed.scrollTop = feed.scrollHeight;
+            return;
+          }
+          const action = match.log[i];
+          const isA = action.attackerId === 'fa';
+          const targetHpElem = isA ? document.getElementById('fb-hp') : document.getElementById('fa-hp');
+          const targetHpText = isA ? document.getElementById('fb-hp-text') : document.getElementById('fa-hp-text');
+          const targetEmoElem = isA ? document.getElementById('fb-emo') : document.getElementById('fa-emo');
+          const attackerEmoElem = isA ? document.getElementById('fa-emo') : document.getElementById('fb-emo');
+
+          targetHpElem.style.width = `${action.defenderHp}%`;
+          if (action.defenderHp < 30) targetHpElem.className = 'hp-bar-fill danger';
+          targetHpText.innerText = `${action.defenderHp} / 100 HP`;
+          targetEmoElem.className = `emo-badge emo-${action.defenderEmotion}`;
+          targetEmoElem.innerText = action.defenderEmotion;
+
+          attackerEmoElem.className = `emo-badge emo-${action.attackerEmotion}`;
+          attackerEmoElem.innerText = action.attackerEmotion;
+
+          feed.innerHTML += `<div class="log-entry ${action.isCrit ? 'log-crit' : ''}">Round ${action.turn}: ${action.combatLog}</div>`;
+          if (action.tauntMessage) {
+            feed.innerHTML += `<div class="taunt-bubble">${action.tauntMessage}</div>`;
+          }
+          feed.scrollTop = feed.scrollHeight;
+          i++;
+        }, 600);
+
+      } catch (e) {
+        feed.innerHTML += `<div class="log-entry" style="color: var(--danger);">Error: ${e.message}</div>`;
+      }
+    }
+  </script>
+</body>
+</html>
