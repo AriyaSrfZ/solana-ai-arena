@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JDKSF0HD9Q"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-JDKSF0HD9Q');
+  </script>
+
   <meta charset="UTF-8">
-  <title>CYBER-ARENA OMNI-RAIL // Solana AI Gladiator Battles</title>
+  <title>CYBER-ARENA OMNI-RAIL // Solana Ranked AI Gladiator Battles</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
@@ -29,45 +38,65 @@
     }
     .wrapper {
       width: 100%;
-      max-width: 900px;
+      max-width: 950px;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
     }
     header {
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       border-bottom: 1px solid #1a2236;
       padding-bottom: 1rem;
     }
     h1 {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       background: linear-gradient(135deg, var(--accent), var(--purple));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: 2px;
     }
-    .universe-nav {
-      display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-    }
-    .u-btn {
+    .ranked-badge-header {
       background: #111524;
-      border: 1px solid #232c45;
-      color: var(--dim);
-      padding: 0.5rem 1rem;
+      border: 1px solid var(--gold);
+      padding: 0.4rem 0.8rem;
       border-radius: 6px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .pack-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .pack-card {
+      background: var(--card);
+      border: 1px solid #1a2236;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      transition: transform 0.2s;
+    }
+    .pack-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .pack-title { font-weight: bold; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .pack-price { color: var(--accent); font-size: 1.2rem; font-weight: 900; }
+    .pack-desc { font-size: 0.75rem; color: var(--dim); margin: 0.5rem 0; line-height: 1.4; }
+    .btn-pack {
+      background: #192033;
+      border: 1px solid #374768;
+      color: var(--text);
+      font-weight: bold;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
       font-size: 0.75rem;
       cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
+      width: 100%;
     }
-    .u-btn.active {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: #09201a;
-    }
+    .btn-pack:hover { background: var(--accent); color: #000; border-color: var(--accent); }
     .battlefield {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
@@ -78,12 +107,7 @@
       border-radius: 8px;
       padding: 1.5rem;
     }
-    .fighter-card {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .fighter-name { font-size: 1.2rem; font-weight: bold; }
+    .fighter-card { display: flex; flex-direction: column; gap: 0.5rem; }
     .hp-bar-bg {
       width: 100%;
       height: 14px;
@@ -96,7 +120,7 @@
       height: 100%;
       background: linear-gradient(90deg, #14f195, #00c975);
       width: 100%;
-      transition: width 0.4s ease;
+      transition: width 0.3s ease;
     }
     .hp-bar-fill.danger { background: linear-gradient(90deg, #ff0055, #ff4d4d); }
     .emo-badge {
@@ -105,19 +129,12 @@
       padding: 0.2rem 0.5rem;
       border-radius: 4px;
       font-weight: bold;
-      width: fit-content;
       text-transform: uppercase;
     }
     .emo-FOCUSED { background: #133a2d; color: var(--accent); border: 1px solid var(--accent); }
     .emo-CONFIDENT { background: #3b2a05; color: var(--gold); border: 1px solid var(--gold); }
     .emo-ENRAGED { background: #3d0515; color: var(--danger); border: 1px solid var(--danger); }
     .emo-TILTED { background: #2f073a; color: #ff00ea; border: 1px solid #ff00ea; }
-    .emo-PANICKED { background: #222; color: #aaa; border: 1px solid #555; }
-    .vs-badge {
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: var(--dim);
-    }
     .control-panel {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -139,15 +156,8 @@
       font-size: 0.95rem;
       cursor: pointer;
       width: 100%;
-      transition: opacity 0.2s;
     }
-    .btn:hover { opacity: 0.9; }
-    .btn-free {
-      background: #1e263d;
-      color: var(--text);
-      border: 1px solid #374768;
-      margin-bottom: 0.5rem;
-    }
+    .btn-free { background: #1e263d; color: var(--text); border: 1px solid #374768; margin-bottom: 0.5rem; }
     .terminal-feed {
       background: #040508;
       border: 1px solid #1a2236;
@@ -156,10 +166,7 @@
       height: 180px;
       overflow-y: auto;
       font-size: 0.8rem;
-      line-height: 1.5;
     }
-    .log-entry { margin-bottom: 0.4rem; }
-    .log-crit { color: var(--gold); font-weight: bold; }
     .taunt-bubble {
       background: #190924;
       border-left: 3px solid var(--purple);
@@ -168,55 +175,79 @@
       color: #dfb2ff;
       font-style: italic;
     }
-    .wager-box {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      font-size: 0.8rem;
-    }
-    .rake-notice {
+    .ladder-table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 0.75rem;
-      color: var(--accent);
-      border-top: 1px solid #1a2236;
-      padding-top: 0.5rem;
       margin-top: 0.5rem;
     }
+    .ladder-table th, .ladder-table td {
+      padding: 0.4rem;
+      border-bottom: 1px solid #1a2236;
+      text-align: left;
+    }
+    .tier-CHALLENGER { color: var(--accent); font-weight: bold; }
+    .tier-MASTER { color: #d946ef; font-weight: bold; }
+    .tier-DIAMOND { color: #60a5fa; font-weight: bold; }
+    .tier-GOLD { color: var(--gold); font-weight: bold; }
   </style>
 </head>
 <body>
   <div class="wrapper">
     <header>
-      <h1>CYBER-ARENA // OMNI-RAIL</h1>
-      <p style="color: var(--dim); font-size: 0.8rem;">Autonomous PvP AI Arena • 5 Rails • Dynamic Morale Tilt Engine</p>
+      <div>
+        <h1>CYBER-ARENA // OMNI-RAIL</h1>
+        <p style="color: var(--dim); font-size: 0.8rem;">Apex Competitive Ladder • Starter Packs • EMO Tilt Engine</p>
+      </div>
+      <div class="ranked-badge-header">
+        <span style="color: var(--gold); font-weight: 900;">🏆 RANK:</span>
+        <span id="rank-display">SILVER IV (1,200 MMR)</span>
+      </div>
     </header>
 
-    <div class="universe-nav">
-      <button class="u-btn active" onclick="selectUniverse('NEO_TOKYO')">NEO-TOKYO 2099</button>
-      <button class="u-btn" onclick="selectUniverse('IRON_COLOSSEUM')">IRON COLOSSEUM</button>
-      <button class="u-btn" onclick="selectUniverse('DEEP_VOID')">DEEP VOID CARTEL</button>
-      <button class="u-btn" onclick="selectUniverse('ELDRITCH_NODE')">ELDRITCH NODE</button>
-      <button class="u-btn" onclick="selectUniverse('WALL_STREET')">WALL STREET 2099</button>
+    <!-- STARTER PACKS SHOWCASE -->
+    <div style="font-weight: bold; font-size: 0.85rem; color: var(--accent);">[ STARTER PACK PACKAGES // MINT & PAY ADVANTAGES ]</div>
+    <div class="pack-grid">
+      <div class="pack-card">
+        <div class="pack-title">Recruit Pack</div>
+        <div class="pack-price">0.02 SOL</div>
+        <div class="pack-desc">1 Random Gladiator + 100 XP Booster. Guaranteed Common or Rare.</div>
+        <button class="btn-pack" onclick="mintPack('RECRUIT')">MINT (0.02 SOL)</button>
+      </div>
+      <div class="pack-card" style="border-color: var(--purple);">
+        <div class="pack-title" style="color: var(--purple);">Syndicate Bundle</div>
+        <div class="pack-price">0.05 SOL</div>
+        <div class="pack-desc">3 Gladiators + 500 XP Booster. Guaranteed Rare with Overclocked traits.</div>
+        <button class="btn-pack" onclick="mintPack('SYNDICATE_BUNDLE')">MINT (0.05 SOL)</button>
+      </div>
+      <div class="pack-card" style="border-color: var(--gold);">
+        <div class="pack-title" style="color: var(--gold);">Apex High-Roller</div>
+        <div class="pack-price">0.20 SOL</div>
+        <div class="pack-desc">5 Gladiators + 2,000 XP Booster. Guaranteed Epic/Legendary (+15% Morale Anchor).</div>
+        <button class="btn-pack" onclick="mintPack('APEX_HIGH_ROLLER')">MINT (0.20 SOL)</button>
+      </div>
     </div>
 
+    <!-- BATTLEFIELD -->
     <div class="battlefield">
-      <div class="fighter-card" id="fighter-a">
-        <div class="fighter-name" id="fa-name">ZeroDay</div>
-        <div style="font-size: 0.75rem; color: var(--dim);" id="fa-arch">Netrunner Specialist</div>
+      <div class="fighter-card">
+        <div style="font-size: 1.1rem; font-weight: bold;" id="fa-name">ZeroDay (Lvl 3)</div>
+        <div style="font-size: 0.75rem; color: var(--accent);">Owned Fighter • Overclocked</div>
         <div class="hp-bar-bg"><div class="hp-bar-fill" id="fa-hp" style="width: 100%;"></div></div>
         <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
-          <span id="fa-hp-text">100 / 100 HP</span>
+          <span id="fa-hp-text">116 / 116 HP</span>
           <span class="emo-badge emo-FOCUSED" id="fa-emo">FOCUSED</span>
         </div>
       </div>
 
-      <div class="vs-badge">VS</div>
+      <div style="font-size: 1.5rem; font-weight: 900; color: var(--dim);">VS</div>
 
-      <div class="fighter-card" id="fighter-b">
-        <div class="fighter-name" id="fb-name">Oni-Enforcer</div>
-        <div style="font-size: 0.75rem; color: var(--dim);" id="fb-arch">Thermal Katana Heavy</div>
+      <div class="fighter-card">
+        <div style="font-size: 1.1rem; font-weight: bold;" id="fb-name">Apex Enforcer</div>
+        <div style="font-size: 0.75rem; color: var(--dim);">Ranked Rival • Syndicate</div>
         <div class="hp-bar-bg"><div class="hp-bar-fill" id="fb-hp" style="width: 100%;"></div></div>
         <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
-          <span id="fb-hp-text">100 / 100 HP</span>
+          <span id="fb-hp-text">110 / 110 HP</span>
           <span class="emo-badge emo-FOCUSED" id="fb-emo">FOCUSED</span>
         </div>
       </div>
@@ -224,110 +255,111 @@
 
     <div class="control-panel">
       <div class="card">
-        <div style="font-weight: bold; margin-bottom: 0.5rem; font-size: 0.85rem;">[ LIVE COMBAT & PSYCHOLOGICAL TAUNT FEED ]</div>
+        <div style="font-weight: bold; margin-bottom: 0.5rem; font-size: 0.85rem;">[ LIVE COMBAT & PSYCHOLOGICAL FEED ]</div>
         <div class="terminal-feed" id="feed">
-          <div class="log-entry" style="color: var(--dim);">Awaiting match deployment... Select free roll or wager match.</div>
+          <div style="color: var(--dim);">Awaiting ranked match deployment...</div>
         </div>
       </div>
 
-      <div class="card wager-box">
-        <div style="font-weight: bold; font-size: 0.85rem;">[ MATCH DISPATCH ]</div>
-        <button class="btn btn-free" onclick="startBattle(0)">FREE GAUNTLET (3/3 Daily)</button>
-        <button class="btn" onclick="startBattle(0.1)">WAGER MATCH (0.1 SOL)</button>
-        <div class="rake-notice">
-          <strong>Non-Custodial Settlement:</strong> Winner takes 90% pot. 10% instant house rake routes to <code>2nNtE6u...</code>.
+      <div class="card">
+        <div style="font-weight: bold; font-size: 0.85rem; margin-bottom: 0.5rem;">[ RANKED DISPATCH ]</div>
+        <button class="btn btn-free" onclick="startRankedBattle(0)">FREE GAUNTLET</button>
+        <button class="btn" onclick="startRankedBattle(0.1)">RANKED WAGER (0.1 SOL)</button>
+        <div style="font-size: 0.75rem; color: var(--dim); margin-top: 0.5rem;">
+          Win battles to climb Apex Divisions and earn Season 1 rewards. Rake: 10% to <code>2nNtE6u...</code>.
         </div>
       </div>
+    </div>
+
+    <!-- LEADERBOARD LADDER -->
+    <div class="card">
+      <div style="font-weight: bold; font-size: 0.85rem; display: flex; justify-content: space-between;">
+        <span>[ SEASON 1 LADDER // APEX SYNDICATE DIVISIONS ]</span>
+        <span style="color: var(--accent);">Top 25 Apex Gladiators</span>
+      </div>
+      <table class="ladder-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Gladiator / Wallet</th>
+            <th>Tier & Division</th>
+            <th>MMR</th>
+            <th>Record (W/L)</th>
+            <th>Pool Share</th>
+          </tr>
+        </thead>
+        <tbody id="ladder-body">
+          <tr><td colspan="6" style="text-align: center; color: var(--dim);">Loading ladder standings...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <script>
-    const UNIVERSES = {
-      NEO_TOKYO: { fA: { name: 'ZeroDay', arch: 'Netrunner Specialist', atk: 26, def: 14 }, fB: { name: 'Oni-Enforcer', arch: 'Thermal Katana Heavy', atk: 28, def: 12 } },
-      IRON_COLOSSEUM: { fA: { name: 'Centurion-X', arch: 'Hydraulic Towershield', atk: 22, def: 20 }, fB: { name: 'Retiarius', arch: 'Magnetic Shock Trident', atk: 29, def: 10 } },
-      DEEP_VOID: { fA: { name: 'Scrap-Reaper', arch: 'Plasma Drill Scavenger', atk: 25, def: 16 }, fB: { name: 'Void-Wraith', arch: 'Pressurized Acid Siphon', atk: 27, def: 13 } },
-      ELDRITCH_NODE: { fA: { name: 'Daemon-Vessel', arch: 'Corrupted Neural Husk', atk: 30, def: 10 }, fB: { name: 'Null-Inquisitor', arch: 'EMP Sanctifier', atk: 24, def: 18 } },
-      WALL_STREET: { fA: { name: 'Liquidation-Broker', arch: 'Capital Scaling Enforcer', atk: 26, def: 15 }, fB: { name: 'Quant-Stalker', arch: 'Predictive Dodge AI', atk: 25, def: 15 } }
-    };
-
-    let activeUniverse = 'NEO_TOKYO';
-
-    function selectUniverse(key) {
-      activeUniverse = key;
-      document.querySelectorAll('.u-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-      const u = UNIVERSES[key];
-      document.getElementById('fa-name').innerText = u.fA.name;
-      document.getElementById('fa-arch').innerText = u.fA.arch;
-      document.getElementById('fb-name').innerText = u.fB.name;
-      document.getElementById('fb-arch').innerText = u.fB.arch;
-      resetCombatants();
-    }
-
-    function resetCombatants() {
-      document.getElementById('fa-hp').style.width = '100%';
-      document.getElementById('fa-hp').className = 'hp-bar-fill';
-      document.getElementById('fa-hp-text').innerText = '100 / 100 HP';
-      document.getElementById('fa-emo').className = 'emo-badge emo-FOCUSED';
-      document.getElementById('fa-emo').innerText = 'FOCUSED';
-
-      document.getElementById('fb-hp').style.width = '100%';
-      document.getElementById('fb-hp').className = 'hp-bar-fill';
-      document.getElementById('fb-hp-text').innerText = '100 / 100 HP';
-      document.getElementById('fb-emo').className = 'emo-badge emo-FOCUSED';
-      document.getElementById('fb-emo').innerText = 'FOCUSED';
-    }
-
-    async function startBattle(wagerSol) {
-      resetCombatants();
-      const feed = document.getElementById('feed');
-      feed.innerHTML = `<div class="log-entry" style="color: var(--accent);">[MATCH START] Dispatched in ${activeUniverse} (Wager: ${wagerSol} SOL)...</div>`;
-
+    async function loadLadder() {
       try {
-        const res = await fetch('/api/match', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ universe: activeUniverse, wagerSol })
+        const res = await fetch('/api/ladder');
+        const data = await res.json();
+        const body = document.getElementById('ladder-body');
+        body.innerHTML = '';
+        data.leaderboard.forEach((p, idx) => {
+          body.innerHTML += `
+            <tr>
+              <td>#${idx + 1}</td>
+              <td>${p.wallet}</td>
+              <td class="tier-${p.tier}">${p.tier} ${p.division} (${p.lp} LP)</td>
+              <td>${p.mmr}</td>
+              <td>${p.wins}W - ${p.losses}L</td>
+              <td>${(p.seasonRewardPoolSharePercent * 100).toFixed(0)}%</td>
+            </tr>
+          `;
         });
-        const match = await res.json();
-        
-        // Play out turns sequentially with delay
-        let i = 0;
-        const interval = setInterval(() => {
-          if (i >= match.log.length) {
-            clearInterval(interval);
-            feed.innerHTML += `<div class="log-entry" style="color: var(--accent); font-weight: bold; margin-top: 0.5rem;">[VICTORY] Winner: ${match.winnerName}! Payout: ${match.payoutSplit.winnerPayoutSol} SOL (House Rake: ${match.payoutSplit.houseRakeSol} SOL)</div>`;
-            feed.scrollTop = feed.scrollHeight;
-            return;
-          }
-          const action = match.log[i];
-          const isA = action.attackerId === 'fa';
-          const targetHpElem = isA ? document.getElementById('fb-hp') : document.getElementById('fa-hp');
-          const targetHpText = isA ? document.getElementById('fb-hp-text') : document.getElementById('fa-hp-text');
-          const targetEmoElem = isA ? document.getElementById('fb-emo') : document.getElementById('fa-emo');
-          const attackerEmoElem = isA ? document.getElementById('fa-emo') : document.getElementById('fb-emo');
-
-          targetHpElem.style.width = `${action.defenderHp}%`;
-          if (action.defenderHp < 30) targetHpElem.className = 'hp-bar-fill danger';
-          targetHpText.innerText = `${action.defenderHp} / 100 HP`;
-          targetEmoElem.className = `emo-badge emo-${action.defenderEmotion}`;
-          targetEmoElem.innerText = action.defenderEmotion;
-
-          attackerEmoElem.className = `emo-badge emo-${action.attackerEmotion}`;
-          attackerEmoElem.innerText = action.attackerEmotion;
-
-          feed.innerHTML += `<div class="log-entry ${action.isCrit ? 'log-crit' : ''}">Round ${action.turn}: ${action.combatLog}</div>`;
-          if (action.tauntMessage) {
-            feed.innerHTML += `<div class="taunt-bubble">${action.tauntMessage}</div>`;
-          }
-          feed.scrollTop = feed.scrollHeight;
-          i++;
-        }, 600);
-
-      } catch (e) {
-        feed.innerHTML += `<div class="log-entry" style="color: var(--danger);">Error: ${e.message}</div>`;
-      }
+      } catch (e) {}
     }
+
+    async function mintPack(type) {
+      alert(`Initiating Starter Pack Purchase: ${type}. Mint transaction builds with 100% payout to operator wallet: GPnfvrNrro1PJTbN4moGkTwtJm3iqywLDZnAYY7pco52`);
+      const res = await fetch('/api/packs/mint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ packType: type, universe: 'NEO_TOKYO' })
+      });
+      const data = await res.json();
+      alert(`MINT SUCCESS! Received ${data.mintedCount} Gladiator(s). Rarity: ${data.gladiators[0].rarity}. Attack: ${data.gladiators[0].attack}, HP: ${data.gladiators[0].maxHp}`);
+    }
+
+    async function startRankedBattle(wagerSol) {
+      const feed = document.getElementById('feed');
+      feed.innerHTML = `<div style="color: var(--accent);">[DEPLOY] Entering Ranked Arena (Wager: ${wagerSol} SOL)...</div>`;
+
+      const res = await fetch('/api/match', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ universe: 'NEO_TOKYO', wagerSol })
+      });
+      const match = await res.json();
+
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i >= match.log.length) {
+          clearInterval(interval);
+          const r = match.rankedUpdate;
+          document.getElementById('rank-display').innerText = `${r.tier} ${r.division} (${r.currentMmr} MMR)`;
+          feed.innerHTML += `<div style="color: var(--gold); font-weight: bold; margin-top: 0.5rem;">[MATCH COMPLETE] Winner: ${match.winnerName}! MMR Change: +${r.mmrChange} (Streak: ${r.winStreak})</div>`;
+          loadLadder();
+          return;
+        }
+        const action = match.log[i];
+        feed.innerHTML += `<div>Round ${action.turn}: ${action.combatLog}</div>`;
+        if (action.tauntMessage) {
+          feed.innerHTML += `<div class="taunt-bubble">${action.tauntMessage}</div>`;
+        }
+        feed.scrollTop = feed.scrollHeight;
+        i++;
+      }, 500);
+    }
+
+    loadLadder();
   </script>
 </body>
 </html>

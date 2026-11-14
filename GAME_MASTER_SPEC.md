@@ -1,7 +1,7 @@
 # MASTER SPECIFICATION: CYBER-ARENA OMNI-RAIL (SOLANA AI COMBAT ECOSYSTEM)
 **Document Version:** 2.0.0-PRODUCTION  
 **Architect:** Ariya Sarrafzadeh (callsign HaroSS)  
-**Target Payout Wallet:** `2nNtE6uEJQjX5vN1cS1m4FBRDuxxqq2hwmtFqn92xkNd` (100% Non-Custodial SPL USDC / SOL)
+**Target Payout Wallet:** `GPnfvrNrro1PJTbN4moGkTwtJm3iqywLDZnAYY7pco52` (100% Non-Custodial SPL USDC / SOL)
 
 ---
 
@@ -26,7 +26,7 @@ To avoid single-channel decay, the platform operates across 5 concurrent operati
 ### Rail 1: Solana Web3 & Solana Pay Native Layer
 - **Deposit & Wagering**: Supports direct wallet connection (Phantom, Solflare, Backpack) via `@solana/wallet-adapter`.
 - **Solana Pay v1 Transaction Requests**: Generates instant QR codes for mobile users and spectators.
-- **Rake Settlement**: 100% non-custodial. Every match escrow automatically splits 90% to the victor and **10% directly to `2nNtE6uEJQjX5vN1cS1m4FBRDuxxqq2hwmtFqn92xkNd`**.
+- **Rake Settlement**: 100% non-custodial. Every match escrow automatically splits 90% to the victor and **10% directly to `GPnfvrNrro1PJTbN4moGkTwtJm3iqywLDZnAYY7pco52`**.
 
 ### Rail 2: Telegram Mini-App (TMA) Mobile Client
 - **Target Audience**: 90% of crypto gamblers operate inside Telegram groups and alpha chats.
@@ -161,7 +161,7 @@ High-stakes crypto gamblers ignore generic apps. They respond to: **Free Roll en
 2. **Tier 2: Wager Arena (0.05 SOL to 0.5 SOL)**
    - Standard PvP matchmaking.
    - Winning player collects **90% of match pool**.
-   - **10% House Rake** is immediately swept to creator wallet: `2nNtE6uEJQjX5vN1cS1m4FBRDuxxqq2hwmtFqn92xkNd`.
+   - **10% House Rake** is immediately swept to creator wallet: `GPnfvrNrro1PJTbN4moGkTwtJm3iqywLDZnAYY7pco52`.
 3. **Tier 3: The High-Roller Syndicate Lounge (1.0 SOL to 10.0 SOL)**
    - Private spectator room with live audio commentary.
    - High-rollers receive an **Alpha Boost (+20% payout multiplier funded by promotional pot)** on 5-win streaks.
@@ -187,5 +187,5 @@ We deploy our verified 4 physical machines and multi-account fleet in parallel:
 A project only counts as complete when:
 1. `npm test` runs across all 5 combat systems and passes 100% of unit assertions.
 2. The WebSocket match coordinator successfully processes a 5-round battle with live turn events, morale state updates, and damage calculations.
-3. The Solana Pay escrow verifies inbound wager signatures and proves an exact 90/10 payout split to `2nNtE6uEJQjX5vN1cS1m4FBRDuxxqq2hwmtFqn92xkNd`.
+3. The Solana Pay escrow verifies inbound wager signatures and proves an exact 90/10 payout split to `GPnfvrNrro1PJTbN4moGkTwtJm3iqywLDZnAYY7pco52`.
 4. The web terminal UI and Telegram Mini App load and render playable matches in under 2 seconds.

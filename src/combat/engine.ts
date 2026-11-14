@@ -1,7 +1,7 @@
 import { Gladiator, CombatAction, MatchResult } from './types.js';
 import { updateMorale, applyEmotionalMultipliers, generatePsychologicalTaunt } from './emo.js';
 
-export const OPERATOR_WALLET = "2nNtE6uEJQjX5vN1cS1m4FBRDuxxqq2hwmtFqn92xkNd";
+export const OPERATOR_WALLET = process.env.OPERATOR_WALLET || process.env.TREASURY_PUBKEY || "GPnfvrNrro1PJTbN4moGkTwtJm3iqywLDZnAYY7pco52";
 
 export function simulateTurn(
   turn: number,
